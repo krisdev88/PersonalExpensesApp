@@ -1,6 +1,3 @@
-import 'dart:io';
-
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
@@ -16,34 +13,28 @@ class NewTransaction extends StatefulWidget {
   @override
   _NewTransactionState createState() {
     print('createState NewTransaction Widget');
-    return _NewTransactionState();
+return _NewTransactionState();
   }
 }
 
 class _NewTransactionState extends State<NewTransaction> {
   final _titleController = TextEditingController();
   final _amountController = TextEditingController();
-  DateTime _selectedDate;
+  late DateTime _selectedDate;
 
-  _NewTransactionState() {
-    print('Constructor NewTransaction State');
-  }
 
   @override
   void initState() {
-    print('initState()');
     super.initState();
   }
 
   @override
   void didUpdateWidget(covariant NewTransaction oldWidget) {
-    print('didUpdateWidget()');
     super.didUpdateWidget(oldWidget);
   }
 
   @override
   void dispose() {
-    print('dispose()');
     super.dispose();
   }
 
@@ -81,7 +72,6 @@ class _NewTransactionState extends State<NewTransaction> {
         _selectedDate = pickedDate;
       });
     });
-    print('...');
   }
 
   @override
@@ -125,7 +115,10 @@ class _NewTransactionState extends State<NewTransaction> {
                             : 'Picked Date: ${DateFormat.yMd().format(_selectedDate)}',
                       ),
                     ),
-                    AdaptiveFlatButton('Choose Date', _presentDatePicker),
+                    AdaptiveFlatButton(
+                      text: 'Choose Date',
+                      handler: _presentDatePicker,
+                    ),
                   ],
                 ),
               ),

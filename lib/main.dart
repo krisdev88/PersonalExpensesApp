@@ -2,16 +2,19 @@ import 'dart:io';
 
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
 
+import './models/transaction.dart';
+import './widgets/chart.dart';
 import './widgets/new_transaction.dart';
 import './widgets/transaction_list.dart';
-import './widgets/chart.dart';
-import './models/transaction.dart';
 
+<<<<<<< Updated upstream
 void main() {
   runApp(MyApp());
 }
+=======
+void main() => runApp(MyApp());
+>>>>>>> Stashed changes
 
 class MyApp extends StatelessWidget {
   @override
@@ -65,16 +68,15 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
 
   @override
   dispose() {
+    super.dispose();
     WidgetsBinding.instance.removeObserver(this);
   }
 
-  List<Transaction> get _recentTransactions {
-    return _userTransactions.where((tx) {
-      return tx.date.isAfter(DateTime.now().subtract(
-        Duration(days: 7),
-      ));
-    }).toList();
-  }
+  List<Transaction> get _recentTransactions => _userTransactions
+      .where((tx) => tx.date.isAfter(DateTime.now().subtract(
+            Duration(days: 7),
+          )))
+      .toList();
 
   void _addNewTransaction(
       String txTitle, double txAmount, DateTime chosenDate) {
@@ -85,108 +87,93 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
       id: DateTime.now().toString(),
     );
 
-    setState(() {
-      _userTransactions.add(newTx);
-    });
+    setState(() => _userTransactions.add(newTx));
   }
 
-  void _startAddNewTransaction(BuildContext ctx) {
-    showModalBottomSheet(
-        context: ctx,
-        builder: (_) {
-          return GestureDetector(
-            onTap: () {},
-            child: NewTransaction(_addNewTransaction),
-            behavior: HitTestBehavior.opaque,
-          );
-        });
-  }
+  void _startAddNewTransaction(BuildContext ctx) => showModalBottomSheet(
+      context: ctx,
+      builder: (_) {
+        return GestureDetector(
+          onTap: () {},
+          child: NewTransaction(_addNewTransaction),
+          behavior: HitTestBehavior.opaque,
+        );
+      });
 
-  void _deleteTransaction(String id) {
-    setState(() {
-      _userTransactions.removeWhere((tx) => tx.id == id);
-    });
-  }
+  void _deleteTransaction(String id) =>
+      setState(() => _userTransactions.removeWhere((tx) => tx.id == id));
 
   List<Widget> _buildLandscapeContent(
-      MediaQueryData mediaQuery, AppBar appBar, txListWidget) {
-    return [
-      Row(
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: <Widget>[
-          Text(
-            'Show Chart',
-            style: Theme.of(context).textTheme.titleMedium,
-          ),
-          Switch.adaptive(
-            activeColor: Theme.of(context).accentColor,
-            value: _showChart,
-            onChanged: (val) {
-              setState(() {
-                _showChart = val;
-              });
-            },
-          ),
-        ],
-      ),
-      _showChart
-          ? Container(
-              height: (mediaQuery.size.height -
-                      appBar.preferredSize.height -
-                      mediaQuery.padding.top) *
-                  0.7,
-              child: Chart(_recentTransactions),
-            )
-          : txListWidget
-    ];
-  }
+          MediaQueryData mediaQuery, AppBar appBar, txListWidget) =>
+      [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: <Widget>[
+            Text(
+              'Show Chart',
+              style: Theme.of(context).textTheme.titleMedium,
+            ),
+            Switch.adaptive(
+              activeColor: Theme.of(context).colorScheme.secondary,
+              value: _showChart,
+              onChanged: (val) => setState(() => _showChart = val),
+            ),
+          ],
+        ),
+        _showChart
+            ? Container(
+                height: (mediaQuery.size.height -
+                        appBar.preferredSize.height -
+                        mediaQuery.padding.top) *
+                    0.7,
+                child: Chart(_recentTransactions),
+              )
+            : txListWidget
+      ];
 
   List<Widget> _buildPortraitContent(
-      MediaQueryData mediaQuery, AppBar appBar, txListWidget) {
-    return [
-      Container(
-        height: (mediaQuery.size.height -
-                appBar.preferredSize.height -
-                mediaQuery.padding.top) *
-            0.3,
-        child: Chart(_recentTransactions),
-      ),
-      txListWidget
-    ];
-  }
+          MediaQueryData mediaQuery, AppBar appBar, txListWidget) =>
+      [
+        Container(
+          height: (mediaQuery.size.height -
+                  appBar.preferredSize.height -
+                  mediaQuery.padding.top) *
+              0.3,
+          child: Chart(_recentTransactions),
+        ),
+        txListWidget
+      ];
 
-  Widget _buildAppBar() {
-    return Platform.isIOS
-        ? CupertinoNavigationBar(
-            middle: Text(
-              'Personal Expenses',
-            ),
-            trailing: Row(
-              mainAxisSize: MainAxisSize.min,
-              children: <Widget>[
-                GestureDetector(
-                  child: const Icon(CupertinoIcons.add),
-                  onTap: () => _startAddNewTransaction(context),
-                )
-              ],
-            ),
-          )
-        : AppBar(
-            title: Text('Personal Expenses'),
-            actions: <Widget>[
-              IconButton(
-                onPressed: () => _startAddNewTransaction(context),
-                icon: const Icon(Icons.add),
-              ),
+  Widget _buildAppBar() => Platform.isIOS
+      ? CupertinoNavigationBar(
+          middle: Text(
+            'Personal Expenses',
+          ),
+          trailing: Row(
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              GestureDetector(
+                child: const Icon(CupertinoIcons.add),
+                onTap: () => _startAddNewTransaction(context),
+              )
             ],
-          );
-  }
+          ),
+        )
+      : AppBar(
+          title: Text('Personal Expenses'),
+          actions: <Widget>[
+            IconButton(
+              onPressed: () => _startAddNewTransaction(context),
+              icon: const Icon(Icons.add),
+            ),
+          ],
+        );
 
   @override
   Widget build(BuildContext context) {
     final mediaQuery = MediaQuery.of(context);
     final isLandscape = mediaQuery.orientation == Orientation.landscape;
-    final PreferredSizeWidget appBar = _buildAppBar();
+    final appBar = _buildAppBar();
     final txListWidget = Container(
       height: (mediaQuery.size.height -
               appBar.preferredSize.height -
@@ -204,13 +191,13 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
             if (isLandscape)
               ..._buildLandscapeContent(
                 mediaQuery,
-                appBar,
+                appBar as AppBar,
                 txListWidget,
               ),
             if (!isLandscape)
               ..._buildPortraitContent(
                 mediaQuery,
-                appBar,
+                appBar as AppBar,
                 txListWidget,
               ),
           ],
@@ -220,10 +207,10 @@ class _MyHomePageState extends State<MyHomePage> with WidgetsBindingObserver {
     return Platform.isIOS
         ? CupertinoPageScaffold(
             child: pageBody,
-            navigationBar: appBar,
+            navigationBar: appBar as ObstructingPreferredSizeWidget,
           )
         : Scaffold(
-            appBar: appBar,
+            appBar: appBar as AppBar,
             body: pageBody,
             floatingActionButtonLocation:
                 FloatingActionButtonLocation.centerFloat,
